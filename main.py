@@ -1,4 +1,5 @@
 import re
+from problem1 import *
 
 if __name__ == '__main__':
     with open('behavior-performance.txt','r') as fil:
@@ -37,6 +38,9 @@ if __name__ == '__main__':
             numFFs.append([int(parsedLine.group(11))])
             s.append([int(parsedLine.group(12))])
     
-def problem1(userIDs = [],vidIDs = [],fracSpent = [],fracComp = [],fracPlayed = [],fracPaused = [],numPauses = [],avgPBR = [],stdPBR = [],numRWs = [],numFFs = [],s = []):
-    for id in userIDs:
-        id = id
+    problem1(userIDs,vidIDs,fracSpent,fracComp,fracPlayed,fracPaused,numPauses,avgPBR,stdPBR,numRWs,numFFs,s)
+    
+
+ 
+
+
