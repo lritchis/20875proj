@@ -20,7 +20,6 @@ if __name__ == '__main__':
     #                      1:ID    2:VID     3:Spent      4:fracComp   5:fracPlay   6:fracPaused
     parser = re.compile('(\w+)\s+(\d+)\s+(\d+\.*\d*e*\-*\d*)\s(\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.*\d*e*\-*\d*)\s+(\d+)\s+(\d+\.*\d*)\s+(\d+\.*\d*e*\-*\d*)\s+(\d+)\s+(\d+)\s+(\d+)\s*') 
     fileText.pop(0)
-    print(fileText[0])
 
     for line in fileText:
         parsedLine = parser.search(line)
