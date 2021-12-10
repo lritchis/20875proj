@@ -1,44 +1,51 @@
 import numpy as np
-import pandas as pd
-import re
 import matplotlib.pyplot as plt
+from sklearn.metrics import r2_score
+
+def problem2(userIDs = [], fracSpent = [], fracComp = [], fracPaused = [], numPauses = [], avgPBR = [], numRWs = [], numFFs = [], s = []):
+    degrees = [1, 2, 3, 4, 5]
+
+    paramFits1 = getFits(s, fracSpent, degrees)
+    paramFits2 = getFits(s, fracComp, degrees)
+    paramFits3 = getFits(s, fracPaused, degrees)
+    paramFits4 = getFits(s, numPauses, degrees)
+    paramFits5 = getFits(s, avgPBR, degrees)
+    paramFits6 = getFits(s, numRWs, degrees)
+    paramFits7 = getFits(s, numFFs, degrees)
+    print("The amount of time spent on the video (relative to video length)")
+    print(paramFits1)
+    print("The fraction of the video watched")
+    print(paramFits2)
+    print("The amount of time spent paused (relative to video length)")
+    print(paramFits3)
+    print("The number of times the student pauses the video")
+    print(paramFits4)
+    print("The average playback rate of the video")
+    print(paramFits5)
+    print("The number of times the video was rewind-ed")
+    print(paramFits6)
+    print("The number of times the video was fast-forwarded")
+    print(paramFits7)
+
 
 #Return fitted model parameters to the dataset at datapath for each choice in degrees.
 #Input: datapath as a string specifying a .txt file, degrees as a list of positive integers.
 #Output: paramFits, a list with the same length as degrees, where paramFits[i] is the list of
 #coefficients when fitting a polynomial of d = degrees[i].
-def main(datapath, degrees):
+def getFits(scoreData, averageData, degrees):
+    paramFits = []
+    
+    for n in degrees:
+        features = feature_matrix(scoreData, n)
+        modelParams = least_squares(features, averageData)
+        paramFits.append(modelParams)
     #fill in
     #read the input file, assuming it has two columns, where each row is of the form [x y] as
     #in poly.txt.
     #iterate through each n in degrees, calling the feature_matrix and least_squares functions to solve
     #for the model parameters in each case. Append the result to paramFits each time.
-    paramFits = []
     
-    myFile = open(datapath)
-    data = myFile.readlines()
-    myFile.close()
-
-    data_rules = re.compile("(\-*\d\.\d*e\+*\-*\d{2}) (\-*\d\.\d*e\+*\-*\d{2})")
-
-    data_length = len(data)
-    i = 0
-    x = data_length * [0]
-    y = data_length * [0]
-
-    for i in range(0,data_length):
-        data_point = data_rules.search(data[i])
-        x[i] = float(data_point.group(1))
-        y[i] = float(data_point.group(2))
-
-    X = feature_matrix(x, degrees[0])
-    paramFits = [least_squares(X,y)]
-    for i in range(1,len(degrees)):
-        X = feature_matrix(x, degrees[i])
-        paramFits.append(least_squares(X,y))
-
-    
-    x_theory = np.linspace(min(x),max(x),1000)
+    x_theory = np.linspace(min(scoreData),max(scoreData),1000)
 
     for k in range(0,len(degrees)):
         y_theory = [0] * len(x_theory)
@@ -48,7 +55,7 @@ def main(datapath, degrees):
 
         plt.plot(x_theory,y_theory)
         
-    plt.scatter(x,y, color="black")
+    plt.scatter(scoreData,averageData, color="black")
     plt.legend(["Degree 1 Fit", "Degree 2 Fit", "Degree 3 Fit", "Degree 4 Fit", "Degree 5 Fit", "Experimental Data"])
     plt.xlabel('X')
     plt.ylabel('Y')
@@ -87,16 +94,13 @@ def least_squares(X, y):
     B = np.matmul(np.matmul(np.linalg.inv(np.matmul(X.T,X)),X.T),y)
     return B
 
-if __name__ == '__main__':
-    datapath = 'poly.txt'
-    degrees = [1, 2, 3, 4, 5]
-    paramFits = main(datapath, degrees)
-    print(paramFits[4])
+#Function that calculates the mean squared error of the model on the input dataset.
+#Input: Feature matrix X, target variable vector y, numpy model object
+#Output: mse, the mean squared error
+def rsquared(X,y,model):
 
-    
+    #Fill in
+    predy = model.predict(X)
+    mse = r2_score(y, predy)
 
-
-
-
-
-    
+    return mse
