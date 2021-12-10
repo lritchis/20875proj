@@ -24,20 +24,20 @@ if __name__ == '__main__':
     for line in fileText:
         parsedLine = parser.search(line)
         if(parsedLine != None):
-            userIDs.append([parsedLine.group(1)])
-            vidIDs.append([int(parsedLine.group(2))])
-            fracSpent.append([float(parsedLine.group(3))])
-            fracComp.append([float(parsedLine.group(4))])
-            fracPlayed.append([float(parsedLine.group(5))])
-            fracPaused.append([float(parsedLine.group(6))])
-            numPauses.append([int(parsedLine.group(7))])
-            avgPBR.append([float(parsedLine.group(8))])
-            stdPBR.append([float(parsedLine.group(9))])
-            numRWs.append([int(parsedLine.group(10))])
-            numFFs.append([int(parsedLine.group(11))])
-            s.append([int(parsedLine.group(12))])
-    
-    problem1(userIDs,vidIDs,fracSpent,fracComp,fracPlayed,fracPaused,numPauses,avgPBR,stdPBR,numRWs,numFFs,s)
+            userIDs.append(str (parsedLine.group(1)))
+            vidIDs.append(int(parsedLine.group(2)))
+            fracSpent.append(float(parsedLine.group(3)))
+            fracComp.append(float(parsedLine.group(4)))
+            fracPlayed.append(float(parsedLine.group(5)))
+            fracPaused.append(float(parsedLine.group(6)))
+            numPauses.append(int(parsedLine.group(7)))
+            avgPBR.append(float(parsedLine.group(8)))
+            stdPBR.append(float(parsedLine.group(9)))
+            numRWs.append(int(parsedLine.group(10)))
+            numFFs.append(int(parsedLine.group(11)))
+            s.append(int(parsedLine.group(12)))
+   
+    problem1(userIDs,fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFFs,s)
     
 
  
