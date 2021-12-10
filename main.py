@@ -26,7 +26,7 @@ if __name__ == '__main__':
     for line in fileText:
         parsedLine = parser.search(line)
         if(parsedLine != None):
-            userIDs.append(str (parsedLine.group(1)))
+            userIDs.append(str(parsedLine.group(1)))
             vidIDs.append(int(parsedLine.group(2)))
             fracSpent.append(float(parsedLine.group(3)))
             fracComp.append(float(parsedLine.group(4)))
