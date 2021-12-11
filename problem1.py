@@ -1,3 +1,7 @@
+import numpy as np
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
+
 def problem1(userIDs,fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFFs,s):
     # create dictionary that holds number of times an ID appears and all other relevant parameters
     # [times, fracSpent, fracComp, fracPaused, numPauses, avgPBR, nuwRWs, numFFs, s] 
@@ -7,7 +11,7 @@ def problem1(userIDs,fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFF
             vidsCompleted[userIDs[i]][0] = vidsCompleted[userIDs[i]][0] + 1
         else:
             vidsCompleted[userIDs[i]] = [1, 0, 0, 0, 0, 0, 0, 0, 0]
-    
+
     for i in range(0,len(userIDs)):
         vidsCompleted[userIDs[i]][1] = vidsCompleted[userIDs[i]][1] + fracSpent[i]
         vidsCompleted[userIDs[i]][2] = vidsCompleted[userIDs[i]][2] + fracComp[i]
@@ -30,7 +34,6 @@ def problem1(userIDs,fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFF
     # take the average of the remaining entries
     for id in vidsCompleted.keys():
         vidsCompleted[id] = [x / vidsCompleted[id][0] for x in vidsCompleted[id]]
-
 
     ## TESTING ## 
     # print(list (vidsCompleted.keys())[0])
@@ -59,4 +62,58 @@ def problem1(userIDs,fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFF
     # tester = [x / j for x in [j, testSpent,testComp,testPaused,testNumPause,testPBR,testRW,testFF,testS]]
     # print(tester)
     # print(vidsCompleted["210f854b0afc3d476d711b2b41379954e48cfa44"])
+
+    filtFracSpent = []
+    for ids in vidsCompleted.keys():
+        filtFracSpent.append(vidsCompleted[ids][1])
+
+    categorize(filtFracSpent)
+
     pass
+
+def categorize(dataset):
+    stDev = np.std(dataset)
+    avg = np.mean(dataset)
+    length = len(dataset)
+
+    sort_list = np.sort(dataset)
+    cutoff0 = sort_list[np.floor(length/3)]
+    cutoff1 = sort_list[np.floor(2*length/3)]
+
+    category = []
+    for point in dataset:
+        if(point <= cutoff0):
+            category.append(0)
+        elif(point <= cutoff1):
+            category.append(1)
+        else:
+            category.append(2)
+     
+    
+    split_ind = np.floor(.9*len(dataset))
+    training_data = dataset[0:split_ind]
+    training_labels = category[0:split_ind]
+
+    test_data = dataset[split_ind+1:len(dataset)]
+    test_labels = category[split_ind+1:len(dataset)]
+
+    for i in range(1,6):
+        print("Number of Neighbors =", i)
+        # create KNN classifier
+        knn = KNeighborsClassifier(n_neighbors=i)
+
+        # train the model using the training sets
+        knn.fit(training_data, training_labels)
+
+        # predict the response for test dataset
+        test_pred = knn.predict(test_data)
+
+        # Model Accuracy, how often is the classifier correct?
+        print("Accuracy:",metrics.accuracy_score(test_labels,test_pred))
+
+        # calcuating the confusion matrix
+        confusion_matrix = metrics.confusion_matrix(test_labels,test_pred)
+        print(confusion_matrix)
+
+
+
