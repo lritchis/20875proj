@@ -55,8 +55,8 @@ def problem2(userIDs = [], fracSpent = [], fracComp = [], fracPaused = [], numPa
         numFFsAvg.append(values[7])
         sAvg.append(values[8])
 
-    #degrees = [1, 2, 3, 4, 5]
-    degrees = [1]
+    degrees = [1, 2, 3, 4, 5]
+    #degrees = [1]
 
     paramFits1 = getFits(sAvg, fracSpentAvg, degrees, "fracSpent")
     paramFits2 = getFits(sAvg, fracCompAvg, degrees, "fracComp")
@@ -65,21 +65,27 @@ def problem2(userIDs = [], fracSpent = [], fracComp = [], fracPaused = [], numPa
     paramFits5 = getFits(sAvg, avgPBRAvg, degrees, "avgPBR")
     paramFits6 = getFits(sAvg, numRWsAvg, degrees, "numRWs")
     paramFits7 = getFits(sAvg, numFFsAvg, degrees, "numFFs")
-    print("\nThe amount of time spent on the video (relative to video length)")
-    printParams(paramFits1, degrees)
-    print("\nThe fraction of the video watched")
-    printParams(paramFits2, degrees)
-    print("\nThe amount of time spent paused (relative to video length)")
-    printParams(paramFits3, degrees)
-    print("\nThe number of times the student pauses the video")
-    printParams(paramFits4, degrees)
-    print("\nThe average playback rate of the video")
-    printParams(paramFits5, degrees)
-    print("\nThe number of times the video was rewind-ed")
-    printParams(paramFits6, degrees)
-    print("\nThe number of times the video was fast-forwarded")
-    printParams(paramFits7, degrees)
 
+    print("\nThe amount of time spent on the video (relative to video length)")
+    printParams(sAvg, fracSpentAvg, paramFits1, degrees, "fracSpent")
+
+    print("\nThe fraction of the video watched")
+    printParams(sAvg, fracCompAvg, paramFits2, degrees, "fracComp")
+
+    print("\nThe amount of time spent paused (relative to video length)")
+    printParams(sAvg, fracPausedAvg, paramFits3, degrees, "fracPaused")
+
+    print("\nThe number of times the student pauses the video")
+    printParams(sAvg, numPausesAvg, paramFits4, degrees, "numPauses")
+
+    print("\nThe average playback rate of the video")
+    printParams(sAvg, avgPBRAvg, paramFits5, degrees, "avgPBR")
+
+    print("\nThe number of times the video was rewind-ed")
+    printParams(sAvg, numRWsAvg, paramFits6, degrees, "numRWs")
+
+    print("\nThe number of times the video was fast-forwarded")
+    printParams(sAvg, numFFsAvg, paramFits7, degrees, "numFFs")
 
 #Return fitted model parameters to the dataset at datapath for each choice in degrees.
 #Input: datapath as a string specifying a .txt file, degrees as a list of positive integers.
@@ -166,29 +172,54 @@ def least_squares(X, y):
 #Function that calculates the mean squared error of the model on the input dataset.
 #Input: Feature matrix X, target variable vector y, numpy model object
 #Output: mse, the mean squared error
-def rsquared(X, y, paramFits, degrees):
+def rsquared(X, y, paramFits, degrees, degree):
+
+    yindex = 0
+    for i in degrees:
+        if i == degree:
+            break
+        yindex = yindex + 1
+
+    if yindex >= len(degrees):
+        print("ERROR: Incorrect degree-degrees association")
 
     predy = []
-    if len(degrees) == 5:
-        #print(paramFits[0][0], "X +", paramFits[0][1])
-        #print(paramFits[1][0], "X^2 +", paramFits[1][1], "X +", paramFits[1][2])
-        #print(paramFits[2][0], "X^3 +", paramFits[2][1], "X^2 +", paramFits[2][2], "X +", paramFits[2][3])
-        #print(paramFits[3][0], "X^4 +", paramFits[3][1], "X^3 +", paramFits[3][2], "X^2 +", paramFits[3][3], "X +", paramFits[3][4])
-        #print(paramFits[4][0], "X^5 +", paramFits[4][1], "X^4 +", paramFits[4][2], "X^3 +", paramFits[4][3], "X^2 +", paramFits[4][4], "X +", paramFits[4][5])
-    elif len(degrees) == 1:
-        predy.append(paramFits[0])
+    value = 0
+    for i in X:
+        for j in range(degree + 1):
+            value = value + (paramFits[yindex][j] * (i ** (degree - j)))
+        predy.append(value)
+        value = 0
     
-    predy = model.predict(X)
-    mse = r2_score(y, predy)
+    rsquared = r2_score(y, predy)
 
     return rsquared
 
-def printParams(paramFits, degrees):
+def printParams(scoreData, averageData, paramFits, degrees, text):
+    X = []
+    y = []
+    
+    #remove the outliers that we visually saw in the graphs
+    index = 0
+    for i in averageData:
+        if(i > 200 or (text == "numRWs" and i > 10)):
+            index = index + 1
+        else:
+            X.append(averageData[index])
+            y.append(scoreData[index])
+            index = index + 1
+    
     if len(degrees) == 5:
         print(paramFits[0][0], "X +", paramFits[0][1])
+        print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 1), "\n")
         print(paramFits[1][0], "X^2 +", paramFits[1][1], "X +", paramFits[1][2])
+        print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 2), "\n")
         print(paramFits[2][0], "X^3 +", paramFits[2][1], "X^2 +", paramFits[2][2], "X +", paramFits[2][3])
+        print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 3), "\n")
         print(paramFits[3][0], "X^4 +", paramFits[3][1], "X^3 +", paramFits[3][2], "X^2 +", paramFits[3][3], "X +", paramFits[3][4])
+        print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 4), "\n")
         print(paramFits[4][0], "X^5 +", paramFits[4][1], "X^4 +", paramFits[4][2], "X^3 +", paramFits[4][3], "X^2 +", paramFits[4][4], "X +", paramFits[4][5])
+        print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 5), "\n")
     elif len(degrees) == 1:
         print(paramFits[0][0], "X +", paramFits[0][1])
+        print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 1), "\n")

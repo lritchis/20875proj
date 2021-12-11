@@ -31,7 +31,7 @@ def problem1(userIDs,fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFF
     for id in vidsCompleted.keys():
         vidsCompleted[id] = [x / vidsCompleted[id][0] for x in vidsCompleted[id]]
 
-from load_cifar_10 import load_cifar_10_data
+#from load_cifar_10 import load_cifar_10_data
 import numpy as np
 from skimage.color import rgb2gray
 #Import knearest neighbors Classifier model
@@ -57,7 +57,7 @@ def load_cifar_3(train_data, train_labels, test_data, test_labels):
     return filtered_trained_data, filtered_trained_labels, filtered_test_data, filtered_test_labels
 
 ######################################################################
-
+"""
 if __name__ == "__main__":
 
     cifar_10_dir = 'cifar-10-batches-py'
@@ -127,3 +127,4 @@ if __name__ == "__main__":
     # print(tester)
     # print(vidsCompleted["210f854b0afc3d476d711b2b41379954e48cfa44"])
     pass
+"""
