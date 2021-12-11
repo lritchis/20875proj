@@ -40,7 +40,7 @@ if __name__ == '__main__':
             s.append(int(parsedLine.group(12)))
    
     #problem1(userIDs,fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFFs,s)
-    problem2(userIDs,fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFFs,s)
+    #problem2(userIDs,fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFFs,s)
     
 
  
