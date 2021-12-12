@@ -2,8 +2,45 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score
 
-def problem3(fracSpent = [], fracComp = [], fracPaused = [], numPauses = [], PBR = [], numRWs = [], numFFs = [], s = []):
+def problem3(vidIDs = [], fracSpent = [], fracComp = [], fracPaused = [], numPauses = [], PBR = [], numRWs = [], numFFs = [], s = []):
+    vidsCompleted = {}
+    for i in range(0,len(vidIDs)):
+        if vidIDs[i] in vidsCompleted.keys():
+            vidsCompleted[vidIDs[i]][0] = vidsCompleted[vidIDs[i]][0] + 1
+        else:
+            vidsCompleted[vidIDs[i]] = [1, 0, 0, 0, 0, 0, 0, 0, 0]
 
+    for i in range(0,len(vidIDs)):
+        vidsCompleted[vidIDs[i]][1] = vidsCompleted[vidIDs[i]][1] + fracSpent[i]
+        vidsCompleted[vidIDs[i]][2] = vidsCompleted[vidIDs[i]][2] + fracComp[i]
+        vidsCompleted[vidIDs[i]][3] = vidsCompleted[vidIDs[i]][3] + fracPaused[i]
+        vidsCompleted[vidIDs[i]][4] = vidsCompleted[vidIDs[i]][4] + numPauses[i]
+        vidsCompleted[vidIDs[i]][5] = vidsCompleted[vidIDs[i]][5] + PBR[i]
+        vidsCompleted[vidIDs[i]][6] = vidsCompleted[vidIDs[i]][6] + numRWs[i]
+        vidsCompleted[vidIDs[i]][7] = vidsCompleted[vidIDs[i]][7] + numFFs[i]
+        vidsCompleted[vidIDs[i]][8] = vidsCompleted[vidIDs[i]][8] + s[i]
+
+    for id in vidsCompleted.keys():
+        vidsCompleted[id] = [x / vidsCompleted[id][0] for x in vidsCompleted[id]]      
+    fracSpentAvg = []
+    fracCompAvg = []
+    fracPausedAvg = []
+    numPausesAvg = []
+    avgPBRAvg = []
+    numRWsAvg = []
+    numFFsAvg = []
+    sAvg = []
+    for keys, values in vidsCompleted.items():
+        fracSpentAvg.append(values[1])
+        fracCompAvg.append(values[2])
+        fracPausedAvg.append(values[3])
+        numPausesAvg.append(values[4])
+        avgPBRAvg.append(values[5])
+        numRWsAvg.append(values[6])
+        numFFsAvg.append(values[7])
+        sAvg.append(values[8])
+
+ 
     #\\\\\\get parameters///////#
     degrees = [1, 2, 3, 4, 5]
     #degrees = [1]

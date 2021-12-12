@@ -41,4 +41,4 @@ if __name__ == '__main__':
    
     #problem1(userIDs,fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFFs,s)
     #problem2(userIDs,fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFFs,s)
-    problem3(fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFFs,s)
+    problem3(vidIDs,fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFFs,s)
