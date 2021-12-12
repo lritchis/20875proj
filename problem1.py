@@ -113,19 +113,11 @@ def categorize(dataset, s):
     training_labels = np.array(category[0:split_ind])
     training_labels = np.ravel(training_labels.reshape(len(training_labels),-1))
 
-    print("Training:")
-    print(np.shape(training_data))
-    print(np.shape(training_labels))
-
-
     test_data = np.array(dataset[:,split_ind+1:])
     test_data = np.array(test_data.reshape(-1,len(test_data)))
     test_labels = np.array(category[split_ind+1:])
     test_labels = np.array(test_labels.reshape(len(test_labels),-1))
 
-    print("Testing")
-    print(np.shape(test_data))
-    print(np.shape(test_labels))
 
     #test_data = dataset[split_ind+1:len(dataset)]
     #test_labels = category[split_ind+1:len(dataset)]
