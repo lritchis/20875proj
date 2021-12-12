@@ -94,8 +94,7 @@ def getFits(scoreDataGiven, averageDataGiven, degrees, text):
             index = index + 1
 
     for n in degrees:
-        features = feature_matrix(averageData, n)
-        modelParams = least_squares(features, scoreData)
+        modelParams = np.polyfit(averageData,scoreData,n)
         #if text == "avgPBR" and n == 5:
         #    print(averageData, "\n\n", scoreData)
         paramFits.append(modelParams)
