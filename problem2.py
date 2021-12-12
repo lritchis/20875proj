@@ -55,6 +55,8 @@ def problem2(userIDs = [], fracSpent = [], fracComp = [], fracPaused = [], numPa
         numFFsAvg.append(values[7])
         sAvg.append(values[8])
 
+
+    #\\\\\\get parameters///////#
     degrees = [1, 2, 3, 4, 5]
     #degrees = [1]
 
@@ -65,7 +67,9 @@ def problem2(userIDs = [], fracSpent = [], fracComp = [], fracPaused = [], numPa
     paramFits5 = getFits(sAvg, avgPBRAvg, degrees, "avgPBR")
     paramFits6 = getFits(sAvg, numRWsAvg, degrees, "numRWs")
     paramFits7 = getFits(sAvg, numFFsAvg, degrees, "numFFs")
+    
 
+    #\\\\\\print results///////#
     print("\nThe amount of time spent on the video (relative to video length)")
     printParams(sAvg, fracSpentAvg, paramFits1, degrees, "fracSpent")
 
@@ -88,9 +92,6 @@ def problem2(userIDs = [], fracSpent = [], fracComp = [], fracPaused = [], numPa
     printParams(sAvg, numFFsAvg, paramFits7, degrees, "numFFs")
 
 #Return fitted model parameters to the dataset at datapath for each choice in degrees.
-#Input: datapath as a string specifying a .txt file, degrees as a list of positive integers.
-#Output: paramFits, a list with the same length as degrees, where paramFits[i] is the list of
-#coefficients when fitting a polynomial of d = degrees[i].
 def getFits(scoreDataGiven, averageDataGiven, degrees, text):
     paramFits = []
     scoreData = []
@@ -110,11 +111,6 @@ def getFits(scoreDataGiven, averageDataGiven, degrees, text):
         features = feature_matrix(averageData, n)
         modelParams = least_squares(features, scoreData)
         paramFits.append(modelParams)
-    #fill in
-    #read the input file, assuming it has two columns, where each row is of the form [x y] as
-    #in poly.txt.
-    #iterate through each n in degrees, calling the feature_matrix and least_squares functions to solve
-    #for the model parameters in each case. Append the result to paramFits each time.
     
     x_theory = np.linspace(min(averageData),max(averageData),1000)
 
@@ -169,9 +165,9 @@ def least_squares(X, y):
     B = np.matmul(np.matmul(np.linalg.inv(np.matmul(X.T,X)),X.T),y)
     return B
 
-#Function that calculates the mean squared error of the model on the input dataset.
-#Input: Feature matrix X, target variable vector y, numpy model object
-#Output: mse, the mean squared error
+#Function that calculates the r-squared value of the model on the input dataset.
+#Input: Feature matrix X, target variable vector y, and more
+#Output: the r-squared value
 def rsquared(X, y, paramFits, degrees, degree):
 
     yindex = 0
