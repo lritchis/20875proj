@@ -19,7 +19,6 @@ def problem3(vidIDs = [], fracSpent = [], fracComp = [], fracPaused = [], numPau
         vidsCompleted[vidIDs[i]][6] = vidsCompleted[vidIDs[i]][6] + numRWs[i]
         vidsCompleted[vidIDs[i]][7] = vidsCompleted[vidIDs[i]][7] + numFFs[i]
         vidsCompleted[vidIDs[i]][8] = vidsCompleted[vidIDs[i]][8] + s[i]
-    print(vidsCompleted.keys())
 
     for id in vidsCompleted.keys():
         vidsCompleted[id] = [x / vidsCompleted[id][0] for x in vidsCompleted[id]]      
@@ -43,8 +42,8 @@ def problem3(vidIDs = [], fracSpent = [], fracComp = [], fracPaused = [], numPau
 
  
     #\\\\\\get parameters///////#
-    #degrees = [1, 2, 3, 4, 5]
-    degrees = [1, 2, 3, 4, 5, 6]
+    degrees = [1, 2, 3, 4, 5]
+    #degrees = [1, 2, 3, 4, 5, 6]
 
     paramFits1 = getFits(sAvg, fracSpentAvg, degrees, "fracSpent")
     paramFits2 = getFits(sAvg, fracCompAvg, degrees, "fracComp")
