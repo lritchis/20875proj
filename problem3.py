@@ -19,6 +19,7 @@ def problem3(vidIDs = [], fracSpent = [], fracComp = [], fracPaused = [], numPau
         vidsCompleted[vidIDs[i]][6] = vidsCompleted[vidIDs[i]][6] + numRWs[i]
         vidsCompleted[vidIDs[i]][7] = vidsCompleted[vidIDs[i]][7] + numFFs[i]
         vidsCompleted[vidIDs[i]][8] = vidsCompleted[vidIDs[i]][8] + s[i]
+    print(vidsCompleted.keys())
 
     for id in vidsCompleted.keys():
         vidsCompleted[id] = [x / vidsCompleted[id][0] for x in vidsCompleted[id]]      
@@ -42,39 +43,38 @@ def problem3(vidIDs = [], fracSpent = [], fracComp = [], fracPaused = [], numPau
 
  
     #\\\\\\get parameters///////#
-    degrees = [1, 2, 3, 4, 5]
-    #degrees = [1]
+    #degrees = [1, 2, 3, 4, 5]
+    degrees = [1, 2, 3, 4, 5, 6]
 
-    paramFits1 = getFits(s, fracSpent, degrees, "fracSpent")
-    paramFits2 = getFits(s, fracComp, degrees, "fracComp")
-    paramFits3 = getFits(s, fracPaused, degrees, "fracPaused")
-    paramFits4 = getFits(s, numPauses, degrees, "numPauses")
-    paramFits5 = getFits(s, PBR, degrees, "PBR")
-    paramFits6 = getFits(s, numRWs, degrees, "numRWs")
-    paramFits7 = getFits(s, numFFs, degrees, "numFFs")
+    paramFits1 = getFits(sAvg, fracSpentAvg, degrees, "fracSpent")
+    paramFits2 = getFits(sAvg, fracCompAvg, degrees, "fracComp")
+    paramFits3 = getFits(sAvg, fracPausedAvg, degrees, "fracPaused")
+    paramFits4 = getFits(sAvg, numPausesAvg, degrees, "numPauses")
+    paramFits5 = getFits(sAvg, avgPBRAvg, degrees, "avgPBR")
+    paramFits6 = getFits(sAvg, numRWsAvg, degrees, "numRWs")
+    paramFits7 = getFits(sAvg, numFFsAvg, degrees, "numFFs")
     
-
     #\\\\\\print results///////#
     print("\nThe amount of time spent on the video (relative to video length)")
-    printParams(s, fracSpent, paramFits1, degrees, "fracSpent")
+    printParams(sAvg, fracSpentAvg, paramFits1, degrees, "fracSpent")
 
     print("\nThe fraction of the video watched")
-    printParams(s, fracComp, paramFits2, degrees, "fracComp")
+    printParams(sAvg, fracCompAvg, paramFits2, degrees, "fracComp")
 
     print("\nThe amount of time spent paused (relative to video length)")
-    printParams(s, fracPaused, paramFits3, degrees, "fracPaused")
+    printParams(sAvg, fracPausedAvg, paramFits3, degrees, "fracPaused")
 
     print("\nThe number of times the student pauses the video")
-    printParams(s, numPauses, paramFits4, degrees, "numPauses")
+    printParams(sAvg, numPausesAvg, paramFits4, degrees, "numPauses")
 
     print("\nThe average playback rate of the video")
-    printParams(s, PBR, paramFits5, degrees, "PBR")
+    printParams(sAvg, avgPBRAvg, paramFits5, degrees, "avgPBR")
 
     print("\nThe number of times the video was rewind-ed")
-    printParams(s, numRWs, paramFits6, degrees, "numRWs")
+    printParams(sAvg, numRWsAvg, paramFits6, degrees, "numRWs")
 
     print("\nThe number of times the video was fast-forwarded")
-    printParams(s, numFFs, paramFits7, degrees, "numFFs")
+    printParams(sAvg, numFFsAvg, paramFits7, degrees, "numFFs")
 
 #Return fitted model parameters to the dataset at datapath for each choice in degrees.
 def getFits(scoreDataGiven, averageDataGiven, degrees, text):
@@ -86,7 +86,7 @@ def getFits(scoreDataGiven, averageDataGiven, degrees, text):
     index = 0
     for i in averageDataGiven:
         #if(i > 200 or (text == "numRWs" and i > 10)):
-        if 1 == 0:
+        if 2 + 2 == 5:
             index = index + 1
         else:
             scoreData.append(scoreDataGiven[index])
@@ -96,16 +96,17 @@ def getFits(scoreDataGiven, averageDataGiven, degrees, text):
     for n in degrees:
         features = feature_matrix(averageData, n)
         modelParams = least_squares(features, scoreData)
+        #if text == "avgPBR" and n == 5:
+        #    print(averageData, "\n\n", scoreData)
         paramFits.append(modelParams)
     
     x_theory = np.linspace(min(averageData),max(averageData),1000)
 
-    for k in range(0,len(degrees)):
+    for k in range(0, len(degrees)):
         y_theory = [0] * len(x_theory)
-        for i in range(0,len(y_theory)):
-            for j in range(0,degrees[k]+1):
+        for i in range(0, len(y_theory)):
+            for j in range(0, degrees[k]+1):
                 y_theory[i] = y_theory[i] + x_theory[i] ** (degrees[k] - j) * paramFits[k][j]
-
         plt.plot(x_theory,y_theory)
         
     plt.scatter(averageData, scoreData, color="black")
@@ -114,6 +115,8 @@ def getFits(scoreDataGiven, averageDataGiven, degrees, text):
     plt.title(text + " Fitting")
     if len(degrees) == 5:
         plt.legend(["Degree 1 Fit", "Degree 2 Fit", "Degree 3 Fit", "Degree 4 Fit", "Degree 5 Fit", "Experimental Data"])
+    elif len(degrees) == 6:
+        plt.legend(["Degree 1 Fit", "Degree 2 Fit", "Degree 3 Fit", "Degree 4 Fit", "Degree 5 Fit", "Degree 6 Fit", "Experimental Data"])
     elif len(degrees) == 1:
         plt.legend(["Degree 1 Fit", "Experimental Data"])
     
@@ -185,7 +188,7 @@ def printParams(scoreData, averageData, paramFits, degrees, text):
     index = 0
     for i in averageData:
         #if(i > 200 or (text == "numRWs" and i > 10)):
-        if 1 == 0:
+        if 2 + 2 == 5:
             index = index + 1
         else:
             X.append(averageData[index])
@@ -203,6 +206,19 @@ def printParams(scoreData, averageData, paramFits, degrees, text):
         print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 4), "\n")
         print(paramFits[4][0], "X^5 +", paramFits[4][1], "X^4 +", paramFits[4][2], "X^3 +", paramFits[4][3], "X^2 +", paramFits[4][4], "X +", paramFits[4][5])
         print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 5), "\n")
+    if len(degrees) == 6:
+        print(paramFits[0][0], "X +", paramFits[0][1])
+        print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 1), "\n")
+        print(paramFits[1][0], "X^2 +", paramFits[1][1], "X +", paramFits[1][2])
+        print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 2), "\n")
+        print(paramFits[2][0], "X^3 +", paramFits[2][1], "X^2 +", paramFits[2][2], "X +", paramFits[2][3])
+        print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 3), "\n")
+        print(paramFits[3][0], "X^4 +", paramFits[3][1], "X^3 +", paramFits[3][2], "X^2 +", paramFits[3][3], "X +", paramFits[3][4])
+        print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 4), "\n")
+        print(paramFits[4][0], "X^5 +", paramFits[4][1], "X^4 +", paramFits[4][2], "X^3 +", paramFits[4][3], "X^2 +", paramFits[4][4], "X +", paramFits[4][5])
+        print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 5), "\n")
+        print(paramFits[5][0], "X^6 +", paramFits[5][1], "X^5 +", paramFits[5][2], "X^4 +", paramFits[5][3], "X^3 +", paramFits[5][4], "X^2 +", paramFits[5][5], "X +", paramFits[5][6])
+        print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 6), "\n")
     elif len(degrees) == 1:
         print(paramFits[0][0], "X +", paramFits[0][1])
         print("R-Squared Value:", rsquared(X, y, paramFits, degrees, 1), "\n")

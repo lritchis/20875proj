@@ -114,10 +114,10 @@ def getFits(scoreDataGiven, averageDataGiven, degrees, text):
     
     x_theory = np.linspace(min(averageData),max(averageData),1000)
 
-    for k in range(0,len(degrees)):
+    for k in range(0, len(degrees)):
         y_theory = [0] * len(x_theory)
-        for i in range(0,len(y_theory)):
-            for j in range(0,degrees[k]+1):
+        for i in range(0, len(y_theory)):
+            for j in range(0, degrees[k]+1):
                 y_theory[i] = y_theory[i] + x_theory[i] ** (degrees[k] - j) * paramFits[k][j]
 
         plt.plot(x_theory,y_theory)
