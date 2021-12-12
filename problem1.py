@@ -64,38 +64,71 @@ def problem1(userIDs,fracSpent,fracComp,fracPaused,numPauses,avgPBR,numRWs,numFF
     # print(vidsCompleted["210f854b0afc3d476d711b2b41379954e48cfa44"])
 
     filtFracSpent = []
+    filtFracComp = []
+    filtFracPaused = []
+    filtNumPauses = []
+    filtAvgPBR = []
+    filtNumRWs = []
+    filtNumFFs = []
+    filtS = []
+
     for ids in vidsCompleted.keys():
         filtFracSpent.append(vidsCompleted[ids][1])
-
-    categorize(filtFracSpent)
+        filtFracComp.append(vidsCompleted[ids][2])
+        filtFracPaused.append(vidsCompleted[ids][3])
+        filtNumPauses.append(vidsCompleted[ids][4])
+        filtAvgPBR.append(vidsCompleted[ids][5])
+        filtNumRWs.append(vidsCompleted[ids][6])
+        filtNumFFs.append(vidsCompleted[ids][7])
+        filtS.append(vidsCompleted[ids][8])
+    
+    
+    data = np.array([filtFracSpent,filtFracComp, filtFracPaused, filtNumPauses,filtAvgPBR,filtNumRWs,filtNumFFs])
+    
+    categorize(data, filtS)
 
     pass
 
-def categorize(dataset):
-    stDev = np.std(dataset)
-    avg = np.mean(dataset)
-    length = len(dataset)
-
-    sort_list = np.sort(dataset)
-    cutoff0 = sort_list[np.floor(length/3)]
-    cutoff1 = sort_list[np.floor(2*length/3)]
+def categorize(dataset, s):
+    dataLen = np.shape(dataset)[1]
+    cutoff0 = .25
+    cutoff1 = .5
+    cutoff2 = .75
 
     category = []
-    for point in dataset:
+    for point in s:
         if(point <= cutoff0):
             category.append(0)
         elif(point <= cutoff1):
             category.append(1)
-        else:
+        elif(point <= cutoff2):
             category.append(2)
-     
-    
-    split_ind = np.floor(.9*len(dataset))
-    training_data = dataset[0:split_ind]
-    training_labels = category[0:split_ind]
+        else:
+            category.append(3)
 
-    test_data = dataset[split_ind+1:len(dataset)]
-    test_labels = category[split_ind+1:len(dataset)]
+
+    split_ind = int(np.floor(.9*dataLen))
+    training_data = np.array(dataset[:,0:split_ind])
+    training_data = np.array(training_data.reshape(-1,len(training_data)))
+    training_labels = np.array(category[0:split_ind])
+    training_labels = np.ravel(training_labels.reshape(len(training_labels),-1))
+
+    print("Training:")
+    print(np.shape(training_data))
+    print(np.shape(training_labels))
+
+
+    test_data = np.array(dataset[:,split_ind+1:])
+    test_data = np.array(test_data.reshape(-1,len(test_data)))
+    test_labels = np.array(category[split_ind+1:])
+    test_labels = np.array(test_labels.reshape(len(test_labels),-1))
+
+    print("Testing")
+    print(np.shape(test_data))
+    print(np.shape(test_labels))
+
+    #test_data = dataset[split_ind+1:len(dataset)]
+    #test_labels = category[split_ind+1:len(dataset)]
 
     for i in range(1,6):
         print("Number of Neighbors =", i)
